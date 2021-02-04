@@ -6,6 +6,7 @@ body {
     padding: 10px;
     background-color: rgba(147, 219, 236, 0.719);
     border:none;
+    border-radius: 10px;
     width: 27vw;
     line-height: 10px;
     font-size: large;

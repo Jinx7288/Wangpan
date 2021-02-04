@@ -1,0 +1,19 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+.logo a img {
+    margin:0px;
+    padding:0px;
+    border:0px;
+    border-radius: 5px;
+    background-color: #333333;
+    width:60px;
+    outline: none;
+    cursor: pointer;
+}
+.top-head {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-bottom: 0.5px solid black;
+}

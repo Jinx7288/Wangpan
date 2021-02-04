@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>我的文件</title>
+        <link rel="stylesheet" href="styles/index.css">
+        <link href="styles/style2.css" rel="stylesheet">
+    </head>
+    <body>
+        <div id="app">
+            <el-container>
+                <el-header class="top-head">
+                     <div class="logo">
+                        <a href="https://www.west2online.com/" target="_self"><img src="resources/Images/w2logo.png"></a>
+                     </div>
+                     <div>
+                        <div class="block"><el-avatar :size="50" :src="circleUrl"></el-avatar></div> 
+                     </div>
+                </el-header>
+                <el-container>
+                  <el-aside width="200px">Aside</el-aside>
+                  <el-main>Main</el-main>
+                </el-container>
+            </el-container>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="scripts/index.js"></script>
+        <script src="scripts/main2.js"></script>
+    </body>
+</html>
