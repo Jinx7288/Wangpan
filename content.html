@@ -10,20 +10,55 @@
     <body>
         <div id="app">
             <el-container>
-                <el-header class="top-head">
-                     <div class="logo">
-                        <a href="https://www.west2online.com/" target="_self"><img src="resources/Images/w2logo.png"></a>
-                     </div>
-                     <div>
-                        <div class="block"><el-avatar :size="50" :src="circleUrl"></el-avatar></div> 
-                     </div>
+                <el-header class="top-head" height="80px">
+                    <el-row>
+                        <el-col :span="2">
+                            <div class="logo">
+                                <a href="https://www.west2online.com/" target="_self"><img src="resources/Images/w2logo.png"></a>
+                             </div>
+                        </el-col>
+                        <el-col :span="2" offset='20'>
+                            <div style="display: inline;">
+                                <el-avatar :size="50" :src="userInfo.headUrl"></el-avatar>
+                            </div>
+                        </el-col>
+                    </el-row>
                 </el-header>
                 <el-container>
-                  <el-aside width="200px">Aside</el-aside>
-                  <el-main>Main</el-main>
+                    <el-aside width="20%" class="sideTree">
+                        <el-card class="box-card">
+                            <div slot="header" class="clearfix">
+                              <span>文件夹目录</span>
+                              <el-button style="float: right" type="primary" plain size="mini">展开/折叠</el-button>
+                            </div>
+                            <div>占位，目录树</div>
+                          </el-card>
+                    </el-aside>
+                    <el-main>
+                      <el-container>
+                        <el-header>
+                            <el-row>
+                                <el-button type="primary" icon="el-icon-upload">上传文件</el-button>
+                                <el-button type="primary" plain icon="el-icon-folder">新建文件夹</el-button>
+                                <el-button type="primary" plain icon="el-icon-download">多选下载</el-button>
+                                <el-button type="danger" plain icon="el-icon-delete">多选删除</el-button>
+                            </el-row>
+                        </el-header>
+                        <el-main>
+                            <el-table :data="cacheList" style="width: 100%">
+                            <el-table-column prop="fileType" label="文件类型"></el-table-column>
+                            <el-table-column prop="fileName" label="文件名" width="180"></el-table-column>
+                            <el-table-column prop="modifyTime" label="修改时间" width="180"></el-table-column>
+                            <el-table-column prop="fileSize" label="大小"></el-table-column>
+                            <el-table-column label="操作"></el-table-column>
+                            </el-table>
+                        </el-main>
+                      </el-container>
+                    </el-main>
                 </el-container>
             </el-container>
         </div>
+        <!-- <script src="https://cdn.jsdelivr.net/npm/vue"></script> -->
         <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
         <script src="scripts/index.js"></script>
         <script src="scripts/main2.js"></script>
