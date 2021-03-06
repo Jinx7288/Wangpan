@@ -23,3 +23,24 @@ img {
 .box-card {
     background-color: rgb(240, 240, 240);
 }
+#app > section > section > aside > div > div.el-card__body {
+    border: 1px rgb(224, 224, 224) solid;
+    height: 270px;
+}
+#app > section > section > aside > div > div.el-card__body > table {
+    border-collapse:collapse;
+}
+#app > section > section > aside > div > div.el-card__body tr {
+    text-align: center;
+    padding:9px;
+    border: 0.2px grey solid;
+    border-radius: 10%;
+    border-collapse: collapse;
+}
+#app > section > section > aside > div > div.el-card__body td {
+    text-align: center;
+    padding:9px;
+    border: 0.2px grey solid;
+    border-radius: 10%;
+    border-collapse: collapse;
+}

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>管理界面</title>
+        <link rel="stylesheet" href="styles/index.css">
+        <link href="styles/style2.css" rel="stylesheet">
+    </head>
+    <body>
+        <div id="app">
+            <el-dialog title="图片审核" :visible.sync="checkwindow">
+                <el-table :data="cacheList.slice(0+(pagenow-1)*10,10+(pagenow-1)*10)" style="width: 100%" highlight-current-row >
+                    <el-table-column prop="type" label="文件类型"></el-table-column>
+                    <el-table-column prop="name" label="文件名" width="180"></el-table-column>
+                    <el-table-column prop="lasttime" label="修改时间" width="180"></el-table-column>
+                    <el-table-column prop="size" label="大小"></el-table-column>
+                    <el-table-column label="操作">
+                        <template slot-scope="scope">
+                            <el-button type="primary" plain size="mini" @click.native.prevent="pass(scope.$index,cacheList)">通过审核</el-button>
+                            <el-button type="danger" plain size="mini" @click.native.prevent="delete(scope.$index,cacheList)">和谐掉</el-button>
+                        </template>
+                    </el-table-column>
+                    </el-table>
+                    <el-pagination
+                    :current-page.sync="pagenow"
+                    layout="total, prev, pager, next"
+                    :total="cacheList.length">
+                  </el-pagination>
+            </el-dialog>
+            <el-header class="top-head" height="80px">
+                <el-row>
+                    <el-col :span="2">
+                        <div class="logo">
+                            <a href="https://www.west2online.com/" target="_self"><img src="resources/Images/w2logo.png"></a>
+                         </div>
+                    </el-col>
+                    <el-col :span="2" offset='20'>
+                        <div style="display: inline;">
+                            <el-dropdown>
+                                <span class="el-dropdown-link">
+                                    <el-avatar :size="50" :src="headurl"></el-avatar>
+                                </span>
+                                <el-dropdown-menu slot="dropdown">
+                                  <el-dropdown-item disabled>个人信息</el-dropdown-item>
+                                  <el-dropdown-item disabled></el-dropdown-item>
+                                  <el-dropdown-item divided @click.native="logOut">注销</el-dropdown-item>
+                                </el-dropdown-menu>
+                              </el-dropdown>
+                        </div>
+                    </el-col>
+                </el-row>
+            </el-header>
+            <el-container>
+                <el-main>
+                  <el-container>
+                    <el-header>
+                        <el-row>
+                            <el-button type="primary" plain icon="el-icon-download">多选通过</el-button>
+                            <el-button type="danger" plain icon="el-icon-delete">多选删除</el-button>
+                        </el-row>
+                    </el-header>
+                    <el-main>
+                        <el-row>
+                            <el-card>
+                                <el-breadcrumb separator="/">
+                                    <el-breadcrumb-item v-for="item in pathlist">{{ item }}</el-breadcrumb-item>
+                                </el-breadcrumb>
+                            </el-card>
+                        </el-row>
+                        <el-table :data="userlist.slice(0+(pagenow-1)*10,10+(pagenow-1)*10)" style="width: 100%" highlight-current-row >
+                        <el-table-column prop="username" label="用户名"></el-table-column>
+                        <el-table-column prop="lasttime" label="最后登录时间" width="180"></el-table-column>
+                        <!-- <el-table-column prop="modifyTime" label="修改时间" width="180"></el-table-column> -->
+                        <el-table-column prop="rate" label="网盘占用率"></el-table-column>
+                        <el-table-column label="操作">
+                            <template slot-scope="scope">
+                                <el-button type="primary" plain size="mini" @click.native.prevent="checkPic(scope.$index,userlist)")">审核其图片</el-button>
+                                <el-button type="danger" plain size="mini" @click.native.prevent="">删除</el-button>
+                            </template>
+                        </el-table-column>
+                        </el-table>
+                        <el-pagination
+                        :current-page.sync="pagenow"
+                        layout="total, prev, pager, next"
+                        :total="cacheList.length">
+                      </el-pagination>
+                    </el-main>
+                  </el-container>
+                </el-main>
+            </el-container>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="scripts/index.js"></script>
+        <script src="scripts/admin/manage.js" type="module"></script>      
+    </body>
+  
+</html>

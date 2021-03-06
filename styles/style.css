@@ -1,5 +1,5 @@
 body {
-    background-image: url(../resources/Images/✧✦✧_83749193_p71.jpg);
+    background:url(../resources/Images/bg.jpg) no-repeat rgba(180, 250, 246, 0.966);
 }
 .box {
     margin: 10vh auto;
@@ -21,7 +21,7 @@ button {
     background-color: rgb(152, 177, 223);
     border: none;
 }
-ul {
+ul { 
     list-style: none;
 }
 li {
