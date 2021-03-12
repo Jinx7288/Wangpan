@@ -14,10 +14,10 @@ let admin=new Vue({
         logIn:function() {
             let adminr=this.admin;
             let that=this;
-            if (/^\w+$/.test(adminr.username)&&checkpw(adminr.password)) {
+            if (/^\w+$/.test(adminr.username)&&(/^\w+$/.test(adminr.password))) {
                     let loginPost=new XMLHttpRequest;
                     loginPost.withCredentials=true;
-                    loginPost.open("post","http://z3773e6368.qicp.vip/user/signin",true);
+                    loginPost.open("post","http://z3773e6368.qicp.vip/admin/signin",true);
                     loginPost.setRequestHeader("content-type","application/json");
                     loginPost.onreadystatechange=function() {
                         if(loginPost.readyState==4 && loginPost.status== 200) {

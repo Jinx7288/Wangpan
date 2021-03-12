@@ -155,18 +155,18 @@ let app=new Vue({
 })
 // ! mock test
 
-Mock.setup({
-    timeout:"100-200"
-})
-Mock.mock(
-    'http://z3773e6368.qicp.vip/user/signin',
-    'post',
-     'ok'
-)
-Mock.mock(
-    'http://z3773e6368.qicp.vip/user/register',
-    'post',
-    'ok'
-)
+// Mock.setup({
+//     timeout:"100-200"
+// })
+// Mock.mock(
+//     'http://z3773e6368.qicp.vip/user/signin',
+//     'post',
+//      'ok'
+// )
+// Mock.mock(
+//     'http://z3773e6368.qicp.vip/user/register',
+//     'post',
+//     'ok'
+// )
 
 

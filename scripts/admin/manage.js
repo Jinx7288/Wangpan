@@ -1,5 +1,5 @@
 
-new Vue({
+let app=new Vue({
     el:"#app",
     data() {
         return {
@@ -13,18 +13,33 @@ new Vue({
     },
     mounted:function() {
         let getn=new XMLHttpRequest;
+        getn.withCredentials=true;
         let that=this;
         getn.open("get","http://z3773e6368.qicp.vip/admin/getn",true);
         getn.onreadystatechange=function() {
             if (getn.readyState==4 && getn.status==200) {
                 try{
-                    that.userlist=JSON.parse(getn.response);                  
+                    let list=JSON.parse(getn.response);
+                    let arr=[];
+                    for (let index = 0; index < list.length; index++) {
+                        let element = list[index];
+                        let ele={
+                            username:element,
+                            lasttime:"2021-03-14-13-14",
+                            rate:"7%",
+                            checknumber:"99+"
+                        }
+                        arr.push(ele);
+                    }
+                    that.userlist=arr;
+                    // console.log(that.userlist);
                 } catch(e) {
                     that.$message.error("未知错误！");
                 }
             }
 
         }
+        getn.send();
     },
     methods:{
         logOut:function() {
@@ -49,16 +64,18 @@ new Vue({
             window.localStorage.removeItem("admin");
         },
         checkPic:function(index,list) {
-            let user=list[item];
+            let that=this;
+            let user=list[index];
             let getUser=new XMLHttpRequest;
-            getUser.open("get","http://z3773e6368.qicp.vip/admin/getp?username="+user.name)
+            getUser.open("get","http://z3773e6368.qicp.vip/admin/getp?username="+user.username)
             getUser.withCredentials=true;
             getUser.onreadystatechange=function() {
                 if(getUser.readyState==4 && getUser.status==200) {
-                    this.checkwindow=true;
-                    this.cacheList=JSON.parse(getUser.response);
+                    that.checkwindow=true;
+                    that.cacheList=JSON.parse(getUser.response);
                 }
             }
+            getUser.send();
         },
         delete:function(index,list) {
             let item = list[index];

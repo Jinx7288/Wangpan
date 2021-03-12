@@ -55,12 +55,12 @@ function picPost(ob) {
 }
 
 function dlfnc(picname) {
-    let dl=new XMLHttpRequest;
+    /* let dl=new XMLHttpRequest;
     dl.open("get","http://z3773e6368.qicp.vip/user/download?picturename="+picname,true);
     dl.withCredentials=true;
     dl.responseType="blob";
     dl.onreadystatechange=function() {
-        if(dl.readyState==4 && fp.status == 200) {
+        if(dl.readyState==4 && dl.status == 200) {
             let blob=dl.responseType;
             let reader = new FileReader();
             reader.readAsDataURL(blob); 
@@ -78,7 +78,8 @@ function dlfnc(picname) {
             }
         }
     }
-    dl.send();
+    dl.send(); */
+   window.open("http://z3773e6368.qicp.vip/user/download?picturename="+picname); 
 }
 
 // function dlfnc(filename) {

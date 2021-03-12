@@ -6,9 +6,10 @@ let app=new Vue({
     el:"#app",
     data:{
             userState:false,
-            lastfilelist:[],
             filelist:[],
+            filelistcache:[],
             piclist:[],
+            piclistcache:[],
             pagenow:1,
             currentFolder:0,
             dialogVisble:false,
@@ -20,7 +21,11 @@ let app=new Vue({
         },
     computed:{
         cacheList:function() {
+            try {
             return modifyf(this.filelist).concat(modifyp(this.piclist))
+            } catch(e) {
+
+            }
         },
         userInfo:function() {
             return {
@@ -45,7 +50,7 @@ let app=new Vue({
             getFirstF.send(null); */  
             axios.get("http://z3773e6368.qicp.vip/user/getf?username="+user.username+"&fid=0").then(function(res){
                 if(res.data) {
-                    that.filelist=JSON.parse(res.data);
+                    that.filelist=res.data
                 } else {
                     that.$message.error("未知错误！");
                 }
@@ -107,8 +112,10 @@ let app=new Vue({
             fp.send(); */
             axios.get("http://z3773e6368.qicp.vip/user/getf?username="+app.userInfo.userId+"&fid="+tem.id).then(function(res){
                  try{
-                    app.filelist=JSON.stringify(res.data);
-                    console.log(app.filelist);
+                    app.filelistcache.push(app.filelist);
+                    app.filelist=res.data;
+                    console.log(app.filelistcache);
+                    // console.log(app.filelistcache);
                  }   catch(e) {
                     app.$message.error(res.data);
                  }            
@@ -130,24 +137,30 @@ let app=new Vue({
             picp.send(); */
             axios.get("http://z3773e6368.qicp.vip/user/getp?id="+tem.id).then(function(res){
                 try{
+                    app.piclistcache.push(app.piclist);
                     app.piclist=res.data;
+                    // console.log(app.piclistcache);
                 } catch(e) {
                     app.$message.error(res.data);
                 }
             })
-            app.lastfilelist.push(tem);
             app.pathlist.push(tem.name);
             app.currentFolder=tem;
             app.pagenow=1;
         },
         backtofolder:function() {
-            try {
+          /*   try {
                 this.filelist=this.lastfilelist[this.lastfilelist.length-1];
+                this.pathlist.pop();
                 this.lastfilelist.pop();
             } catch(e) {
                 app.$message.error("已无上级！");
-            }
-            
+            } */
+            this.filelist=this.filelistcache[this.filelistcache.length-1];
+            this.piclist=this.piclistcache[this.piclistcache.length-1];
+            this.pathlist.pop();
+            this.filelistcache.pop();
+            this.piclistcache.pop();
         },
         createFolderToggle:function() {
             this.cfVisble=true;
@@ -190,12 +203,23 @@ let app=new Vue({
                 {
                     id:cid,
                     fid:that.currentFolder.id,
-                    username:that.usreinfo.userId,
+                    username:that.userInfo.userId,
                     filename:that.cfcache
                 },
                 {
                     "content-type":"application/json"
                 })
+            that.$message({
+                message:"创建成功",
+                type:"success"
+            })
+            that.filelist.push({
+                id:cid,
+                fid:that.currentFolder==0?0:that.currentFolder.name,
+                username:that.userInfo.userId,
+                filename:that.cfcache
+            })
+             that.cfcache="";
             } else {
                 this.$message.error("文件夹名不能为空！");
             }
@@ -204,7 +228,7 @@ let app=new Vue({
             let tem=list[index];
             dlfnc(tem.name);
         },
-        delete:function(index,list) {
+        deletesth:function(index,list) {
             let tem=list[index];
             let that=this;
             /* let del=new XMLHttpRequest;
@@ -221,7 +245,7 @@ let app=new Vue({
                 }
             }
             del.send(); */
-            axios.get("http://z3773e6368.qicp.vip/user/delete?picturename="+tem.name).then(function(res){
+            axios.get("http://z3773e6368.qicp.vip/user/deletec?id="+tem.id).then(function(res){
                 if(res.data=="ok") {
                     that.$message({
                         message:"删除成功",
@@ -239,13 +263,14 @@ let app=new Vue({
         verify:function() {
 
         },
-        uploadPost:function() {
+        uploadPost:function(pms) {
+            let file=pms.file !== null?pms.file.raw:null;
             let formdata= new FormData;
             let that=this;
             let id=getUid();
             formdata.append("id",id);
-            formdata.append("username",this.userId);
-            formdata.append("filedata",this.upfilelist[0].raw);
+            formdata.append("username",that.userInfo.userId);
+            formdata.append("upload",file);
             let uppost=new XMLHttpRequest;
             uppost.open("post","http://z3773e6368.qicp.vip/user/upload");
             uppost.setRequestHeader("content-type","multipart/form-data");
@@ -266,7 +291,14 @@ let app=new Vue({
                         that.$message.error(uppost.response);
                     }
                 }
-            }        
-        }       
+            }
+            uppost.send();    
+        },
+        folderif:function(i,l) {
+            return l[i].type=="folder"? true:false
+        },
+        picif:function(i,l) {
+            return l[i].type=="folder"?false:true
+        }
     }
 })

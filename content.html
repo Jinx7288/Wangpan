@@ -15,11 +15,13 @@
                     <el-upload
                         drag
                         :limit="1"
+                        accept="iamge/jpeg,image/png"
                         auto-upload="false"
+                        :multiple="false"
                         :http-request="uploadPost"
                         :on-change="verify"
                         :file-list="upfilelist"
-                        action=""
+                        action="http://z3773e6368.qicp.vip/user/upload"
                         >
                         <i class="el-icon-upload"></i>
                         <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
@@ -27,10 +29,10 @@
                     </el-upload>
                     <span slot="footer" class="dialog-footer">
                       <el-button @click="dialogVisble=false">取消</el-button>
-                      <el-button type="primary" @click="uploadPost">确定</el-button>
+                      <el-button type="primary" @click.native.prevent="uploadPost">确定</el-button>
                     </span>
                 </el-dialog>
-                <el-dialog title="创建文件夹" :visible.sync="cfVisble" width="30%">
+                <el-dialog title="创建文件夹(不关不是bug)" :visible.sync="cfVisble" width="30%">
                     <el-input v-model="cfcache" autocomplete="off" maxlength="10"></el-input>
                     <span slot="footer" class="dialog-footer">
                         <el-button @click="cfVisble=false">取消</el-button>
@@ -44,7 +46,7 @@
                                 <a href="https://www.west2online.com/" target="_self"><img src="resources/Images/w2logo.png"></a>
                              </div>
                         </el-col>
-                        <el-col :span="2" offset='20'>
+                        <el-col :span="2" offset="20">
                             <div style="display: inline;">
                                 <el-dropdown>
                                     <span class="el-dropdown-link">
@@ -94,9 +96,9 @@
                             <el-table-column prop="size" label="大小"></el-table-column>
                             <el-table-column label="操作">
                                 <template slot-scope="scope">
-                                    <el-button type="primary" plain size="mini" @click.native="openFolder(scope.$index,cacheList)">查看/预览</el-button>
-                                    <el-button type="primary" plain size="mini" @click.native="download(scope.$index,cacheList)">下载</el-button>
-                                    <el-button type="danger" plain size="mini" @click.native="delete(scope.$index,cacheList)">删除</el-button>
+                                    <el-button type="primary" plain size="mini" @click.native="openFolder(scope.$index,cacheList)" v-if="folderif(scope.$index,cacheList)">打开</el-button>
+                                    <el-button type="primary" plain size="mini" @click.native="download(scope.$index,cacheList)" v-if="picif(scope.$index,cacheList)">下载</el-button>
+                                    <el-button type="danger" plain size="mini" @click.native="deletesth(scope.$index,cacheList)">删除</el-button>
                                 </template>
                             </el-table-column>
                             </el-table>
