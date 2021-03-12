@@ -128,7 +128,7 @@ let app=new Vue({
                 }
             }
             picp.send(); */
-            axios.get("http://z3773e6368.qicp.vip/user/getp?id="+tem.id,true).then(function(res){
+            axios.get("http://z3773e6368.qicp.vip/user/getp?id="+tem.id).then(function(res){
                 try{
                     app.piclist=res.data;
                 } catch(e) {
