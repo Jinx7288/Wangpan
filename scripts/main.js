@@ -1,5 +1,5 @@
 import { checkpw,clearob } from "./fns.js";
-
+axios.defaults.withCredentials=true;
 
 let app=new Vue({
     el:"#login",
@@ -26,6 +26,7 @@ let app=new Vue({
         if(token) {
             let trypost=new XMLHttpRequest;
             trypost.open("post","server/login.java",true);
+            trypost.withCredentials=true;
             trypost.setRequestHeader("content-type","application/json");
             trypost.setRequestHeader("Authentication",token);
             trypost.onreadystatechange=function() {
@@ -44,9 +45,10 @@ let app=new Vue({
             let finalUser=this.user;
             let that=this;
             if (/^\w+$/.test(finalUser.username)&&checkpw(finalUser.password)) {
-                    let loginPost=new XMLHttpRequest;
+                /*     let loginPost=new XMLHttpRequest;
                     // loginPost.withCredentials=true;
                     loginPost.open("post","http://z3773e6368.qicp.vip/user/signin",true);
+                    loginPost.withCredentials=true;
                     loginPost.setRequestHeader("content-type","application/json");
                     loginPost.onreadystatechange=function() {
                         if(loginPost.readyState==4 && loginPost.status== 200) {
@@ -69,7 +71,19 @@ let app=new Vue({
                             }
                         }
                     }
-                    loginPost.send(JSON.stringify(finalUser));
+                    loginPost.send(JSON.stringify(finalUser)); */
+                    axios.post('http://z3773e6368.qicp.vip/user/signin',that.user,{
+                             "content-type":"application/json"
+                         }
+                     ).then(function(res){
+                         console.log(res);
+                        if(res.data=="ok") {
+                            window.localStorage.setItem("user",JSON.stringify(that.user));
+                            window.location.href="content.html";
+                        } else {
+                            that.$message.error("登录失败");
+                        }
+                     }); 
                 }  
                 else {
                     this.$message.error('用户名或密码格式错误!请重新输入');
@@ -83,8 +97,9 @@ let app=new Vue({
                 &&checkpw(newuser.addpw)
                 &&checkpw(newuser.addpw1)
                 &&(newuser.addpw==newuser.addpw1)) {
-                let signupPost=new XMLHttpRequest;
+              /*   let signupPost=new XMLHttpRequest;
                 signupPost.open("post","http://z3773e6368.qicp.vip/user/register",true);
+                signupPost.withCredentials=true;
                 signupPost.setRequestHeader("content-type","application/json");
                 signupPost.onreadystatechange=function(){
                     if(signupPost.readyState==4 && signupPost.status==200) {
@@ -109,196 +124,49 @@ let app=new Vue({
                 "username":that.adduser.username,
                 "password":that.adduser.addpw
             }
-            signupPost.send(JSON.stringify(send));
+            signupPost.send(JSON.stringify(send)); */
+            axios.post('http://z3773e6368.qicp.vip/user/register',{
+                "username":that.adduser.username,
+                "password":that.adduser.addpw
+            },{
+                "content-type":"application/json"
+            }).then(function(res){
+                if(res.data=="ok") {
+                    that.$message({
+                        message:"注册成功！请登录",
+                        type:"success"
+                    })
+                    that.stateTg=true;
+                    that.adduser.addid='';
+                    that.adduser.addemail='';
+                    that.adduser.addpw='';
+                    that.adduser.addpw1='';
+                    that.user.username='';
+                    that.user.password='';
+                } else {
+                    that.$message.error("注册失败");
+                }
+                });
             } else {
                 that.$message.error("格式错误，请修改！");
             }
         }
     }
 })
-
 // ! mock test
 
-// Mock.setup({
-//     timeout:"200-400"
-// })
-// Mock.mock(
-//     'server/login.java',
-//     'post',
-//      {
-//         "token":"@guid",
-//         "files":[
-//             {   
-//                 "name":"@ctitle(4,7)",
-//                 "type":"folder",
-//                 "nodeid":"@natural(10000,20000)"
-//             },
-//             {
-//                 "name":"@ctitle(4,7)",
-//                 "type":"folder",
-//                 "nodeid":"@natural(10000,20000)"
-//             },
-//             {
-//                 "name":"@ctitle(4,7)",
-//                 "type":"photo",
-//                 "size":"444KB",
-//                 "nodeid":"@natural(4,7)"
-//             },
-//             {
-//                 "name":"@ctitle(4,7)",
-//                 "type":"photo",
-//                 "size":"444KB",
-//                 "nodeid":"@natural(4,7)"
-//             },{
-//                 "name":"@ctitle(4,7)",
-//                 "type":"photo",
-//                 "size":"444KB",
-//                 "nodeid":"@natural(4,7)"
-//             },{
-//                 "name":"@ctitle(4,7)",
-//                 "type":"photo",
-//                 "size":"444KB",
-//                 "nodeid":"@natural(4,7)"
-//             },{
-//                 "name":"@ctitle(4,7)",
-//                 "type":"photo",
-//                 "size":"444KB",
-//                 "nodeid":"@natural(4,7)"
-//             },{
-//                 "name":"@ctitle(4,7)",
-//                 "type":"photo",
-//                 "size":"444KB",
-//                 "nodeid":"@natural(4,7)"
-//             },{
-//                 "name":"@ctitle(4,7)",
-//                 "type":"photo",
-//                 "size":"444KB",
-//                 "nodeid":"@natural(4,7)"
-//             },{
-//                 "name":"@ctitle(4,7)",
-//                 "type":"photo",
-//                 "size":"444KB",
-//                 "nodeid":"@natural(4,7)"
-//             },{
-//                 "name":"@ctitle(4,7)",
-//                 "type":"photo",
-//                 "size":"444KB",
-//                 "nodeid":"@natural(4,7)"
-//             },{
-//                 "name":"@ctitle(4,7)",
-//                 "type":"photo",
-//                 "size":"444KB",
-//                 "nodeid":"@natural(4,7)"
-//             },{
-//                 "name":"@ctitle(4,7)",
-//                 "type":"photo",
-//                 "size":"444KB",
-//                 "nodeid":"@natural(4,7)"
-//             },{
-//                 "name":"@ctitle(4,7)",
-//                 "type":"photo",
-//                 "size":"444KB",
-//                 "nodeid":"@natural(4,7)"
-//             },{
-//                 "name":"@ctitle(4,7)",
-//                 "type":"photo",
-//                 "size":"444KB",
-//                 "nodeid":"@natural(4,7)"
-//             },{
-//                 "name":"@ctitle(4,7)",
-//                 "type":"photo",
-//                 "size":"444KB",
-//                 "nodeid":"@natural(4,7)"
-//             },{
-//                 "name":"@ctitle(4,7)",
-//                 "type":"photo",
-//                 "size":"444KB",
-//                 "nodeid":"@natural(4,7)"
-//             },{
-//                 "name":"@ctitle(4,7)",
-//                 "type":"photo",
-//                 "size":"444KB",
-//                 "nodeid":"@natural(4,7)"
-//             },{
-//                 "name":"@ctitle(4,7)",
-//                 "type":"photo",
-//                 "size":"444KB",
-//                 "nodeid":"@natural(4,7)"
-//             },{
-//                 "name":"@ctitle(4,7)",
-//                 "type":"photo",
-//                 "size":"444KB",
-//                 "nodeid":"@natural(4,7)"
-//             },{
-//                 "name":"@ctitle(4,7)",
-//                 "type":"photo",
-//                 "size":"444KB",
-//                 "nodeid":"@natural(4,7)"
-//             },{
-//                 "name":"@ctitle(4,7)",
-//                 "type":"photo",
-//                 "size":"444KB",
-//                 "nodeid":"@natural(4,7)"
-//             },{
-//                 "name":"@ctitle(4,7)",
-//                 "type":"photo",
-//                 "size":"444KB",
-//                 "nodeid":"@natural(4,7)"
-//             },{
-//                 "name":"@ctitle(4,7)",
-//                 "type":"photo",
-//                 "size":"444KB",
-//                 "nodeid":"@natural(4,7)"
-//             },{
-//                 "name":"@ctitle(4,7)",
-//                 "type":"photo",
-//                 "size":"444KB",
-//                 "nodeid":"@natural(4,7)"
-//             },{
-//                 "name":"@ctitle(4,7)",
-//                 "type":"photo",
-//                 "size":"444KB",
-//                 "nodeid":"@natural(4,7)"
-//             },{
-//                 "name":"@ctitle(4,7)",
-//                 "type":"photo",
-//                 "size":"444KB",
-//                 "nodeid":"@natural(4,7)"
-//             },{
-//                 "name":"@ctitle(4,7)",
-//                 "type":"photo",
-//                 "size":"444KB",
-//                 "nodeid":"@natural(4,7)"
-//             },{
-//                 "name":"@ctitle(4,7)",
-//                 "type":"photo",
-//                 "size":"444KB",
-//                 "nodeid":"@natural(4,7)"
-//             },{
-//                 "name":"@ctitle(4,7)",
-//                 "type":"photo",
-//                 "size":"444KB",
-//                 "nodeid":"@natural(4,7)"
-//             },{
-//                 "name":"@ctitle(4,7)",
-//                 "type":"photo",
-//                 "size":"444KB",
-//                 "nodeid":"@natural(4,7)"
-//             },{
-//                 "name":"@ctitle(4,7)",
-//                 "type":"photo",
-//                 "size":"444KB",
-//                 "nodeid":"@natural(4,7)"
-//             }
-//         ]
-//     }
-//   //  "no user"
-//     //  ! 用户不存在样例
-// )
-// Mock.mock(
-//     'server/signup.java',
-//     'post',
-//     "success"
-// )
+Mock.setup({
+    timeout:"100-200"
+})
+Mock.mock(
+    'http://z3773e6368.qicp.vip/user/signin',
+    'post',
+     'ok'
+)
+Mock.mock(
+    'http://z3773e6368.qicp.vip/user/register',
+    'post',
+    'ok'
+)
 
 

@@ -15,47 +15,71 @@ function modifylocaltree() {
     
 }
 
-function folderPost(ob) {
+function folderPost(ob,username) {
 
     let fp=new XMLHttpRequest;
     fp.open("post","http://z3773e6368.qicp.vip/user/getf",true);
     // fp.setRequestHeader("Authentication",window.localStorage.getItem("token"));
     fp.setRequestHeader("content-type","application/json");
+    fp.withCredentials=true;
     fp.onreadystatechange=function() {
         if(fp.readyState==4 && fp.status== 200) {
             return JSON.parse(fp.response)                            
         } else {
-            this.$message.error('网络或其他未知错误！请稍后重试')
+            app.$message.error('网络或其他未知错误！请稍后重试');
+            // console.log(fp.responseText);
         }
     }
-    fp.send();
+    console.log(app.filelist);
+    fp.send(JSON.stringify({
+        "username":username,
+        "fid":app.filelist[ob.name].fid
+    }));
+}
+function picPost(ob) {
+    let picp=new XMLHttpRequest;
+    picp.open("get","http://z3773e6368.qicp.vip/user/getf?fid="+ob.name,true);
+    // picp.setRequestHeader("Authentication",window.localStorage.getItem("token"));
+    picp.withCredentials=true;
+    picp.setRequestHeader("content-type","application/json");
+    picp.withCredentials=true;
+    picp.onreadystatechange=function() {
+        if(picp.readyState==4 && picp.status== 200) {
+            return JSON.parse(picp.response)                            
+        } else {
+            // console.log(picp.response);
+            app.$message.error('网络或其他未知错误！请稍后重试')
+        }
+    }
+    picp.send();
 }
 
 function dlfnc(picname) {
     let dl=new XMLHttpRequest;
     dl.open("get","http://z3773e6368.qicp.vip/user/download?picturename="+picname,true);
+    dl.withCredentials=true;
+    dl.responseType="blob";
     dl.onreadystatechange=function() {
         if(dl.readyState==4 && fp.status == 200) {
+            let blob=dl.responseType;
+            let reader = new FileReader();
+            reader.readAsDataURL(blob); 
+            reader.onload = function(e) {
+                var a = document.createElement('a');
+                a.download = filename;
+                a.href = e.target.result;
+                document.querySelector("body").append(a);
+                a.click();
+                document.querySelector(a).remove();
             this.$message({
                 message:"下载成功！",
                 type:"success"
-            })
+            });
+            }
         }
     }
     dl.send();
 }
-
-// let dl=new XMLHttpRequest;
-// dl.open("get","http://z3773e6368.qicp.vip/user/getf?username=ddddddddd&fid=0",true);
-// dl.setRequestHeader("content-type","application/json");
-// dl.onreadystatechange=function() {
-//     if(dl.readyState==4 && dl.status== 200) {
-//         console.log(dl.response)
-//     } else {
-//         console.log(dl.response)
-//     }
-// }
-// dl.send();
 
 // function dlfnc(filename) {
 //     let dl = new XMLHttpRequest;
@@ -147,7 +171,9 @@ function modifyf(flist) {
         let ele={
             type:"folder",
             name:element.filename,
-            size:"0KB"
+            size:"0KB",
+            fid:element.fid,
+            id:element.id
         }
         arr.push(ele);
     }
@@ -178,4 +204,4 @@ function getUid () {
     let fuid = uid.join("")
     return fuid
   }
-export { checkpw,clearob,modifylocaltree,folderPost,dlfnc,missile,modifyf,modifyp,getUid };
+export { checkpw,clearob,modifylocaltree,folderPost,picPost,dlfnc,missile,modifyf,modifyp,getUid };

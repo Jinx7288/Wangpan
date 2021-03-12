@@ -16,7 +16,7 @@ let admin=new Vue({
             let that=this;
             if (/^\w+$/.test(adminr.username)&&checkpw(adminr.password)) {
                     let loginPost=new XMLHttpRequest;
-                    // loginPost.withCredentials=true;
+                    loginPost.withCredentials=true;
                     loginPost.open("post","http://z3773e6368.qicp.vip/user/signin",true);
                     loginPost.setRequestHeader("content-type","application/json");
                     loginPost.onreadystatechange=function() {

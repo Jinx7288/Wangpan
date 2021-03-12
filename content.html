@@ -72,10 +72,11 @@
                       <el-container>
                         <el-header>
                             <el-row>
+                                <el-button type="primary" icon="el-icon-back" plain @click="backtofolder">返回上级</el-button>
                                 <el-button type="primary" icon="el-icon-upload" @click="upload">上传文件</el-button>
                                 <el-button type="primary" plain icon="el-icon-folder" @click="createFolderToggle">新建文件夹</el-button>
-                                <el-button type="primary" plain icon="el-icon-download" @click="tfsmdown">多选下载，待定</el-button>
-                                <el-button type="danger" plain icon="el-icon-delete" @click="tfsmdel ">多选删除，待定</el-button>
+                                <el-button type="primary" plain icon="el-icon-download" @click="">多选下载，待定</el-button>
+                                <el-button type="danger" plain icon="el-icon-delete" @click="">多选删除，待定</el-button>
                             </el-row>
                         </el-header>
                         <el-main>
@@ -93,9 +94,9 @@
                             <el-table-column prop="size" label="大小"></el-table-column>
                             <el-table-column label="操作">
                                 <template slot-scope="scope">
-                                    <el-button type="primary" plain size="mini" @click.native.prevent="openFolder(scope.$index,cacheList)">查看/预览</el-button>
-                                    <el-button type="primary" plain size="mini" @click.native.prevent="download(scope.$index,cacheList)">下载</el-button>
-                                    <el-button type="danger" plain size="mini" @click.native.prevent="delete(scope.$index,cacheList)">删除</el-button>
+                                    <el-button type="primary" plain size="mini" @click.native="openFolder(scope.$index,cacheList)">查看/预览</el-button>
+                                    <el-button type="primary" plain size="mini" @click.native="download(scope.$index,cacheList)">下载</el-button>
+                                    <el-button type="danger" plain size="mini" @click.native="delete(scope.$index,cacheList)">删除</el-button>
                                 </template>
                             </el-table-column>
                             </el-table>
@@ -112,7 +113,9 @@
         </div>
         <!-- <script src="https://cdn.jsdelivr.net/npm/vue"></script> -->
         <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
         <script src="scripts/index.js"></script>
         <script src="scripts/main2.js" type="module"></script>
+        <!-- <script src="scripts/mockdata.js"></script> -->
     </body>
 </html>

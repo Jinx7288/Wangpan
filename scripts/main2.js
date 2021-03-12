@@ -1,16 +1,19 @@
-import { folderPost,dlfnc,missile,modifyf,modifyp,getUid } from "./fns.js";
+import { folderPost,picPost,dlfnc,missile,modifyf,modifyp,getUid } from "./fns.js";
+axios.defaults.withCredentials=true;
+
 
 let app=new Vue({
     el:"#app",
     data:{
             userState:false,
+            lastfilelist:[],
             filelist:[],
             piclist:[],
             pagenow:1,
-            currentFolder:"0",
+            currentFolder:0,
             dialogVisble:false,
             cfVisble:false,
-            cfcache:"",
+            cfcache:'',
             pathlist:["初级目录"],
             date:new Date,
             upfilelist:[]
@@ -31,61 +34,131 @@ let app=new Vue({
         let that = this;
         let user=JSON.parse(window.localStorage.getItem("user"));
         if (user) {
-            let getFirstF=new XMLHttpRequest;
+           /*  let getFirstF=new XMLHttpRequest;
             getFirstF.open("get","http://z3773e6368.qicp.vip/user/getf?username="+user.username+"&fid=0",true);
+            getFirstF.withCredentials=true;
             getFirstF.onreadystatechange=function() {
                 if(getFirstF.readyState==4 && getFirstF.status==200) {
                     that.filelist=JSON.parse(getFirstF.response);
-                } else {
-                    that.$message.error("未知错误！")
                 }
             };
-            getFirstF.send();  
+            getFirstF.send(null); */  
+            axios.get("http://z3773e6368.qicp.vip/user/getf?username="+user.username+"&fid=0").then(function(res){
+                if(res.data) {
+                    that.filelist=JSON.parse(res.data);
+                } else {
+                    that.$message.error("未知错误！");
+                }
+                }); 
         } else {
-            // window.location.href="index.html";
             this.$message.error("用户未登录！");
+            setTimeout(window.location.href="index.html",3000);
         }
     },
     methods:{
         logOut:function() {
-            window.location.href="index.html";
-            let signout=new XMLHttpRequest;
             let that=this;
+            /* let signout=new XMLHttpRequest;
             signout.open("get","http://z3773e6368.qicp.vip/user/signout",true);
+            signout.withCredentials=true;
             signout.onreadystatechange=function(){
                 if(signout.readyState==4 && signout.status==200) {
                    if(signout.responseText=="ok") {
                         that.$message({
                             message:"用户已注销",
                             type:"success"
-                        })
+                        });
+                        window.localStorage.removeItem("user");
+                        window.location.href="index.html";
                    } else {
                        console.log(signout.responseText);
                    }
                 }
             }
-            signout.send();
-            window.localStorage.removeItem("user");
+            signout.send(); */
+            axios.get("http://z3773e6368.qicp.vip/user/signout").then(function(res){
+                if(res.data=="ok") {
+                    that.$message({
+                        message:"用户已注销",
+                        type:"success"
+                    });
+                    window.localStorage.removeItem("user");
+                    setTimeout(()=>(window.location.href="index.html"),1500)
+                } else {
+                    that.$message.error("未知错误！");
+                }
+                }); 
         },
         openFolder:function(index,list) {
-            let tem=JSON.stringify(list[index]);
-            this.filelist=folderPost(tem);
-            this.piclist=picPost(tem);
-            that.pathlist.push(tem.name);
-            this.pagenow=1; 
+            let tem=JSON.parse(JSON.stringify(list[index]));
+            // app.filelist=folderPost(tem,app.userInfo.userId);
+            /* let fp=new XMLHttpRequest;
+            fp.open("get","http://z3773e6368.qicp.vip/user/getf?username="+app.userInfo.userId+"&fid="+tem.fid,true);
+            // fp.setRequestHeader("Authentication",window.localStorage.getItem("token"));
+            fp.withCredentials=true;
+            fp.setRequestHeader("content-type","application/json");
+            fp.onreadystatechange=function() {
+                if(fp.readyState==4 && fp.status== 200) {
+                   app.filelist=JSON.parse(fp.response)                            
+                } else {
+                    // console.log(fp.responseText);
+                }
+            } 
+            fp.send(); */
+            axios.get("http://z3773e6368.qicp.vip/user/getf?username="+app.userInfo.userId+"&fid="+tem.id).then(function(res){
+                 try{
+                    app.filelist=JSON.stringify(res.data);
+                    console.log(app.filelist);
+                 }   catch(e) {
+                    app.$message.error(res.data);
+                 }            
+            });
+            // app.piclist=picPost(tem);
+            /* let picp=new XMLHttpRequest;
+            picp.open("get","http://z3773e6368.qicp.vip/user/getp?id="+tem.fid,true);
+            // picp.setRequestHeader("Authentication",window.localStorage.getItem("token"));
+            picp.withCredentials=true;
+            picp.setRequestHeader("content-type","application/json");
+            picp.withCredentials=true;
+            picp.onreadystatechange=function() {
+                if(picp.readyState==4 && picp.status== 200) {
+                   app.piclist=JSON.parse(picp.response)                            
+                } else {
+                    // console.log(picp.response);
+                }
+            }
+            picp.send(); */
+            axios.get("http://z3773e6368.qicp.vip/user/getp?id="+tem.id,true).then(function(res){
+                try{
+                    app.piclist=res.data;
+                } catch(e) {
+                    app.$message.error(res.data);
+                }
+            })
+            app.lastfilelist.push(tem);
+            app.pathlist.push(tem.name);
+            app.currentFolder=tem;
+            app.pagenow=1;
         },
-        backtofolder:function(str) {
+        backtofolder:function() {
+            try {
+                this.filelist=this.lastfilelist[this.lastfilelist.length-1];
+                this.lastfilelist.pop();
+            } catch(e) {
+                app.$message.error("已无上级！");
+            }
             
         },
         createFolderToggle:function() {
             this.cfVisble=true;
         },
         createFolder:function() {
-            if(this.cfcache!=="") {
-            let cf=new XMLHttpRequest;
-            let id=getUid();
+            if(this.cfcache!="") {
+            let cid=getUid();
             let that=this;
+           /*  let cf=new XMLHttpRequest;
             cf.open("post","http://z3773e6368.qicp.vip/user/cfile",true);
+            cf.withCredentials=true;
             cf.setRequestHeader("content-type","application/json");
             cf.onreadystatechange=function() {
                 if(cf.readyState==4 && cf.status==200) {
@@ -95,9 +168,9 @@ let app=new Vue({
                             type:"success"
                         }),
                         that.filelist.push({
-                           Uid:id,
-                           fid:that.cfcache,
-                           username:that.userId,
+                           id:cid,
+                           fid:that.currentFolder==0?0:that.currentFolder.name,
+                           username:that.userInfo.userId,
                            filename:that.cfcache
                         })
                         that.cfcache="";
@@ -107,11 +180,22 @@ let app=new Vue({
                 }
             }
             cf.send(JSON.stringify({
-                Uid:id,
-                fid:cf.cache,
+                id:cid,
+                fid:that.currentFolder.id,
                 username:that.userInfo.userId,
                 filename:that.cfcache
-            }))
+            })) */
+            axios.post(
+                "http://z3773e6368.qicp.vip/user/cfile",
+                {
+                    id:cid,
+                    fid:that.currentFolder.id,
+                    username:that.usreinfo.userId,
+                    filename:that.cfcache
+                },
+                {
+                    "content-type":"application/json"
+                })
             } else {
                 this.$message.error("文件夹名不能为空！");
             }
@@ -123,8 +207,8 @@ let app=new Vue({
         delete:function(index,list) {
             let tem=list[index];
             let that=this;
-            let del=new XMLHttpRequest;
-            del.open("get","http://z3773e6368.qicp.vip/user/delete?picturename="+tem.picturename,true);
+            /* let del=new XMLHttpRequest;
+            del.open("get","http://z3773e6368.qicp.vip/user/delete?picturename="+tem.name,true);
             del.onreadystatechange=function() {
                 if(del.readyState==4 && del.status==200) {
                     that.$message({
@@ -136,6 +220,18 @@ let app=new Vue({
                     that.$message.error(del.response);
                 }
             }
+            del.send(); */
+            axios.get("http://z3773e6368.qicp.vip/user/delete?picturename="+tem.name).then(function(res){
+                if(res.data=="ok") {
+                    that.$message({
+                        message:"删除成功",
+                        type:"success"
+                    });
+                list.splice(index,1);
+                } else {
+                    that.$message.error("未知错误！");
+                }
+                }); 
         },
         upload:function() {
             this.dialogVisble=true;
@@ -147,12 +243,13 @@ let app=new Vue({
             let formdata= new FormData;
             let that=this;
             let id=getUid();
-            formdata.append("uid",id);
+            formdata.append("id",id);
             formdata.append("username",this.userId);
             formdata.append("filedata",this.upfilelist[0].raw);
             let uppost=new XMLHttpRequest;
             uppost.open("post","http://z3773e6368.qicp.vip/user/upload");
             uppost.setRequestHeader("content-type","multipart/form-data");
+            uppost.withCredentials=true;
             uppost.onreadystatechange=function() {
                 if (uppost.readyState==4 && uppost.status==200) {
                     if (uppost.responseText=="ok") {
@@ -173,98 +270,3 @@ let app=new Vue({
         }       
     }
 })
-
-// Mock.mock(
-//     'server/openfolder.java',
-//     'post',
-//     [
-//         {
-//             "type":"folder",
-//             "name":"@cname(4,7)"
-//         },
-//         {
-//             "type":"folder",
-//             "name":"@cname(4,7)"
-//         },
-//         {
-//             "type":"photo",
-//             "name":"@cname(4,7)"
-//         },
-//         {
-//             "type":"photo",
-//             "name":"@cname(4,7)"
-//         },{
-//             "type":"photo",
-//             "name":"@cname(4,7)"
-//         },{
-//             "type":"photo",
-//             "name":"@cname(4,7)"
-//         },{
-//             "type":"photo",
-//             "name":"@cname(4,7)"
-//         },{
-//             "type":"photo",
-//             "name":"@cname(4,7)"
-//         },{
-//             "type":"photo",
-//             "name":"@cname(4,7)"
-//         },{
-//             "type":"photo",
-//             "name":"@cname(4,7)"
-//         },{
-//             "type":"photo",
-//             "name":"@cname(4,7)"
-//         },{
-//             "type":"photo",
-//             "name":"@cname(4,7)"
-//         },{
-//             "type":"photo",
-//             "name":"@cname(4,7)"
-//         },{
-//             "type":"photo",
-//             "name":"@cname(4,7)"
-//         },{
-//             "type":"photo",
-//             "name":"@cname(4,7)"
-//         },{
-//             "type":"photo",
-//             "name":"@cname(4,7)"
-//         },{
-//             "type":"photo",
-//             "name":"@cname(4,7)"
-//         },{
-//             "type":"photo",
-//             "name":"@cname(4,7)"
-//         },{
-//             "type":"photo",
-//             "name":"@cname(4,7)"
-//         },{
-//             "type":"photo",
-//             "name":"@cname(4,7)"
-//         },{
-//             "type":"photo",
-//             "name":"@cname(4,7)"
-//         },{
-//             "type":"photo",
-//             "name":"@cname(4,7)"
-//         },{
-//             "type":"photo",
-//             "name":"@cname(4,7)"
-//         },{
-//             "type":"photo",
-//             "name":"@cname(4,7)"
-//         },{
-//             "type":"photo",
-//             "name":"@cname(4,7)"
-//         },{
-//             "type":"photo",
-//             "name":"@cname(4,7)"
-//         },{
-//             "type":"photo",
-//             "name":"@cname(4,7)"
-//         },{
-//             "type":"photo",
-//             "name":"@cname(4,7)"
-//         }
-//     ]
-// )
