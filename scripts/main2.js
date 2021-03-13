@@ -306,15 +306,31 @@ let app=new Vue({
                         that.$message({
                             message:"上传成功！",
                             type:"success"
-                        })
-                        that.piclist.push("待审核文件");
-
+                        });
+                        // that.piclist.push("待审核文件");
+                        axios.get("http://z3773e6368.qicp.vip/user/getf?username="+app.userInfo.userId+"&fid="+that.currentFolder.id).then(function(res){
+                            try{
+                               app.filelist=res.data;
+                               // console.log(app.filelistcache);
+                            }   catch(e) {
+                               app.$message.error(res.data);
+                            }            
+                       });
+                        axios.get("http://z3773e6368.qicp.vip/user/getp?id="+tem.id).then(function(res){
+                            try{
+                                app.piclist=res.data;
+                                // console.log(app.piclistcache);
+                            } catch(e) {
+                                app.$message.error(res.data);
+                            }
+                        });
                     } else {
                         that.$message.error(uppost.response);
                     }
                 }
             }
-            uppost.send(formdata);    
+            uppost.send(formdata);
+
            /*  axios.post("http://z3773e6368.qcip.vip/user/upload",
             formdata,
             {
