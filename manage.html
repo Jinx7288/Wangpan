@@ -12,6 +12,7 @@
         <div id="app">
             <el-dialog title="图片审核" :visible.sync="checkwindow" width="70%">
                 <el-table :data="cacheList.slice(0+(pagenow-1)*10,10+(pagenow-1)*10)" style="width: 100%" highlight-current-row >
+                    <el-table-column type="selection" width="50"></el-table-column>
                     <el-table-column prop="type" label="文件类型"></el-table-column>
                     <el-table-column prop="name" label="文件名" width="180"></el-table-column>
                     <el-table-column prop="lasttime" label="修改时间" width="180"></el-table-column>
