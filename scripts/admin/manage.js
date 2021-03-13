@@ -106,7 +106,7 @@ let app=new Vue({
                             message:"删除成功！",
                             type:"success"
                         })
-                        this.cacheList.slice(index,1);
+                        that.cacheList.slice(index,1);
                     } else {
                         that.$message.error(del.responseText);
                     }
@@ -127,7 +127,7 @@ let app=new Vue({
                             message:"已通过！",
                             type:"success"
                         })
-                        this.cacheList.slice(index,1);
+                        that.cacheList.slice(index,1);
                     } else {
                         that.$message.error(pass.response);
                     }

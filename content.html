@@ -7,6 +7,7 @@
         <link rel="stylesheet" href="styles/index.css">
         <link href="styles/style2.css" rel="stylesheet">
         <link rel="shortcut icon" href="favicon.ico">
+        <meta http-equiv="Access-Control-Allow-Origin" content="*">
         <script src="scripts/mock.js"></script>
     </head>
     <body>
@@ -51,7 +52,7 @@
                                         <el-avatar :size="50" :src="userInfo.headUrl"></el-avatar>
                                     </span>
                                     <el-dropdown-menu slot="dropdown">
-                                      <el-dropdown-item disabled>个人信息</el-dropdown-item>
+                                      <el-dropdown-item disabled>{{ userInfo.userId}}</el-dropdown-item>
                                       <el-dropdown-item disabled></el-dropdown-item>
                                       <el-dropdown-item divided @click.native="logOut">注销</el-dropdown-item>
                                     </el-dropdown-menu>
@@ -72,8 +73,8 @@
                       <el-container>
                         <el-header>
                             <el-row>
-                                <el-button type="primary" icon="el-icon-back" plain @click="backtofolder" disabled="primaryif">返回上级</el-button>
-                                <el-button type="primary" icon="el-icon-upload" @click="upload">上传文件</el-button>
+                                <el-button type="primary" icon="el-icon-back" plain @click="backtofolder" :disabled="primaryif">返回上级</el-button>
+                                <el-button type="primary" icon="el-icon-upload" @click="upload" :disabled="primaryif">上传文件</el-button>
                                 <el-button type="primary" plain icon="el-icon-folder" @click="createFolderToggle">新建文件夹</el-button>
                                 <el-button type="primary" plain icon="el-icon-download" @click="">多选下载，待定</el-button>
                                 <el-button type="danger" plain icon="el-icon-delete" @click="">多选删除，待定</el-button>

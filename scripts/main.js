@@ -9,11 +9,11 @@ let app=new Vue({
             notallOK:false,
             visible:true,
             user:{
-                username:"demoForSignup",
+                username:"demo",
                 password:"7777777Aa"
             },
             adduser:{
-                username:'demoForSignup',
+                username:'demo',
                 addemail:'jinx.drx@gmail.com',
                 addpw:'7777777Aa',
                 addpw1:'7777777Aa'

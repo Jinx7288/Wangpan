@@ -17,9 +17,12 @@ let app=new Vue({
             cfcache:'',
             pathlist:["初级目录"],
             date:new Date,
-            upfilelist:[]
+            upfilelist:[],
         },
     computed:{
+        primaryif:function() {
+            return this.pathlist.length==1 ? true : false
+        },
         cacheList:function() {
             try {
             return modifyf(this.filelist).concat(modifyp(this.piclist))
@@ -145,7 +148,9 @@ let app=new Vue({
                 }
             })
             app.pathlist.push(tem.name);
+            // console.log(app.pathlist);
             app.currentFolder=tem;
+            console.log(JSON.parse(JSON.stringify(app.currentFolder)));
             app.pagenow=1;
         },
         backtofolder:function() {
@@ -202,7 +207,7 @@ let app=new Vue({
                 "http://z3773e6368.qicp.vip/user/cfile",
                 {
                     id:cid,
-                    fid:that.currentFolder.id,
+                    fid:that.currentFolder==0?0:that.currentFolder.id,
                     username:that.userInfo.userId,
                     filename:that.cfcache
                 },
@@ -216,7 +221,7 @@ let app=new Vue({
                         })
                         that.filelist.push({
                             id:cid,
-                            fid:that.currentFolder==0?0:that.currentFolder.name,
+                            fid:that.currentFolder==0?0:that.currentFolder.id,
                             username:that.userInfo.userId,
                             filename:that.cfcache
                         })
@@ -251,17 +256,31 @@ let app=new Vue({
                 }
             }
             del.send(); */
-            axios.get("http://z3773e6368.qicp.vip/user/deletep?picturename="+tem.name).then(function(res){
-                if(res.data=="ok") {
-                    that.$message({
-                        message:"删除成功",
-                        type:"success"
-                    });
-                that.piclist.splice(index,1);
-                } else {
-                    that.$message.error("未知错误！");
-                }
-                }); 
+            if(tem.type=="photo") {
+                axios.get("http://z3773e6368.qicp.vip/user/deletep?picturename="+tem.name).then(function(res){
+                    if(res.data=="ok") {
+                        that.$message({
+                            message:"删除成功",
+                            type:"success"
+                        });
+                    that.piclist.splice(index,1);
+                    } else {
+                        that.$message.error("未知错误！");
+                    }
+                    }); 
+            } else {
+                axios.get("http://z3773e6368.qicp.vip/user/deletec?id="+tem.id).then(function(res){
+                    if(res.data=="ok") {
+                        that.$message({
+                            message:"删除成功",
+                            type:"success"
+                        });
+                    that.filelist.splice(index,1);
+                    } else {
+                        that.$message.error("未知错误！");
+                    }
+                    }); 
+            }
         },
         upload:function() {
             this.dialogVisble=true;
@@ -273,13 +292,13 @@ let app=new Vue({
 
             let formdata= new FormData;
             let that=this;
-            let id=getUid();
-            formdata.append("id",id);
+            formdata.append("id",that.currentFolder.id);
             formdata.append("username",that.userInfo.userId);
             formdata.append("upload",that.upfilelist[0].raw);
-            /* let uppost=new XMLHttpRequest;
+            console.log(that.upfilelist[0].raw);
+            let uppost=new XMLHttpRequest;
             uppost.open("post","http://z3773e6368.qicp.vip/user/upload");
-            uppost.setRequestHeader("content-type","multipart/form-data");
+            // uppost.setRequestHeader("content-type","multipart/form-data");
             uppost.withCredentials=true;
             uppost.onreadystatechange=function() {
                 if (uppost.readyState==4 && uppost.status==200) {
@@ -288,14 +307,17 @@ let app=new Vue({
                             message:"上传成功！",
                             type:"success"
                         })
-                        that.piclist.push("id");
+                        that.piclist.push("待审核文件");
+
                     } else {
                         that.$message.error(uppost.response);
                     }
                 }
             }
-            uppost.send(formdata);  */   
-            axios.post("http://z3773e6368.qcip.vip/user/upload",formdata,{
+            uppost.send(formdata);    
+           /*  axios.post("http://z3773e6368.qcip.vip/user/upload",
+            formdata,
+            {
                 "content-type":"multipart/form-data"
             }).then(function(res) {
                 if(res.data=="ok") {
@@ -305,7 +327,7 @@ let app=new Vue({
                     })} else {
                         that.$message.error("未知错误！");
                     }
-            })
+            }) */
         },
         handlechange:function(file,filelist) {
             this.upfilelist=filelist;
@@ -315,9 +337,6 @@ let app=new Vue({
         },
         picif:function(i,l) {
             return l[i].type=="folder"?false:true
-        },
-        primaryif:function() {
-            return this.pathlist.length==1 ? true : false
         }
     }
 })
