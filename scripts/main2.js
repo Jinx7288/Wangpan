@@ -8,7 +8,7 @@ let app=new Vue({
             userState:false,
             filelist:[],
             filelistcache:[],
-            piclist:[],
+            piclist:["32432","324242","23424242342"],
             piclistcache:[],
             pagenow:1,
             currentFolder:0,
@@ -18,6 +18,7 @@ let app=new Vue({
             pathlist:["初级目录"],
             date:new Date,
             upfilelist:[],
+            selectedlist:[]
         },
     computed:{
         primaryif:function() {
@@ -64,6 +65,41 @@ let app=new Vue({
         }
     },
     methods:{
+        deleteselected:function() {
+            let that=this;
+            let list=this.selectedlist;
+            for (let index = 0; index < list.length; index++) {
+                const tem = list[index];
+                if(tem.type=="photo") {
+                    axios.get("http://z3773e6368.qicp.vip/user/deletep?picturename="+tem.name).then(function(res){
+                        if(res.data=="ok") {
+                            that.$message({
+                                message:"删除成功",
+                                type:"success"
+                            });
+                        that.piclist.splice(index,1);
+                        } else {
+                            that.$message.error("未知错误！");
+                        }
+                        }); 
+                } else {
+                    axios.get("http://z3773e6368.qicp.vip/user/deletec?id="+tem.id).then(function(res){
+                        if(res.data=="ok") {
+                            that.$message({
+                                message:"删除成功",
+                                type:"success"
+                            });
+                        that.filelist.splice(index,1);
+                        } else {
+                            that.$message.error("未知错误！");
+                        }
+                        }); 
+                }   
+            }
+        },
+        cgsl:function(list) {
+            this.selectedlist=list;
+        },
         logOut:function() {
             let that=this;
             /* let signout=new XMLHttpRequest;

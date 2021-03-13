@@ -76,8 +76,8 @@
                                 <el-button type="primary" icon="el-icon-back" plain @click="backtofolder" :disabled="primaryif">返回上级</el-button>
                                 <el-button type="primary" icon="el-icon-upload" @click="upload" :disabled="primaryif">上传文件</el-button>
                                 <el-button type="primary" plain icon="el-icon-folder" @click="createFolderToggle">新建文件夹</el-button>
-                                <el-button type="primary" plain icon="el-icon-download" @click="">多选下载，待定</el-button>
-                                <el-button type="danger" plain icon="el-icon-delete" @click="">多选删除，待定</el-button>
+                                <el-button type="primary" plain icon="el-icon-download" disabled>多选下载</el-button>
+                                <el-button type="danger" plain icon="el-icon-delete" @click="deleteselected">删除选中</el-button>
                             </el-row>
                         </el-header>
                         <el-main>
@@ -88,7 +88,10 @@
                                     </el-breadcrumb>
                                 </el-card>
                             </el-row>
-                            <el-table :data="cacheList.slice(0+(pagenow-1)*10,10+(pagenow-1)*10)" style="width: 100%" highlight-current-row >
+                            <el-table :data="cacheList.slice(0+(pagenow-1)*10,10+(pagenow-1)*10)" style="width: 100%" highlight-current-row @selection-change="cgsl">
+                            <el-table-column type="selection" width="50">
+                                
+                            </el-table-column>
                             <el-table-column prop="type" label="文件类型">
                                 <template slot-scope="scope">
                                     <i :class="[folderif(scope.$index,cacheList) ? 'el-icon-folder' : 'el-icon-picture-outline']"></i>
