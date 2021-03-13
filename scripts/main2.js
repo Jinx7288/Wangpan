@@ -208,18 +208,24 @@ let app=new Vue({
                 },
                 {
                     "content-type":"application/json"
+                }).then(function(res){
+                    if(res.data=="ok") {
+                        that.$message({
+                            message:"创建成功",
+                            type:"success"
+                        })
+                        that.filelist.push({
+                            id:cid,
+                            fid:that.currentFolder==0?0:that.currentFolder.name,
+                            username:that.userInfo.userId,
+                            filename:that.cfcache
+                        })
+                         that.cfcache="";
+                    } else {
+                        that.$message.error("创建失败")
+                    }
                 })
-            that.$message({
-                message:"创建成功",
-                type:"success"
-            })
-            that.filelist.push({
-                id:cid,
-                fid:that.currentFolder==0?0:that.currentFolder.name,
-                username:that.userInfo.userId,
-                filename:that.cfcache
-            })
-             that.cfcache="";
+            
             } else {
                 this.$message.error("文件夹名不能为空！");
             }
@@ -245,13 +251,13 @@ let app=new Vue({
                 }
             }
             del.send(); */
-            axios.get("http://z3773e6368.qicp.vip/user/deletec?id="+tem.id).then(function(res){
+            axios.get("http://z3773e6368.qicp.vip/user/deletep?picturename="+tem.name).then(function(res){
                 if(res.data=="ok") {
                     that.$message({
                         message:"删除成功",
                         type:"success"
                     });
-                list.splice(index,1);
+                that.piclist.splice(index,1);
                 } else {
                     that.$message.error("未知错误！");
                 }
@@ -263,15 +269,15 @@ let app=new Vue({
         verify:function() {
 
         },
-        uploadPost:function(pms) {
-            let file=pms.file !== null?pms.file.raw:null;
+        uploadPoststh:function() {
+
             let formdata= new FormData;
             let that=this;
             let id=getUid();
             formdata.append("id",id);
             formdata.append("username",that.userInfo.userId);
-            formdata.append("upload",file);
-            let uppost=new XMLHttpRequest;
+            formdata.append("upload",that.upfilelist[0].raw);
+            /* let uppost=new XMLHttpRequest;
             uppost.open("post","http://z3773e6368.qicp.vip/user/upload");
             uppost.setRequestHeader("content-type","multipart/form-data");
             uppost.withCredentials=true;
@@ -288,13 +294,30 @@ let app=new Vue({
                     }
                 }
             }
-            uppost.send();    
+            uppost.send(formdata);  */   
+            axios.post("http://z3773e6368.qcip.vip/user/upload",formdata,{
+                "content-type":"multipart/form-data"
+            }).then(function(res) {
+                if(res.data=="ok") {
+                    that.$message({
+                        message:"上传成功！",
+                        type:"success"
+                    })} else {
+                        that.$message.error("未知错误！");
+                    }
+            })
+        },
+        handlechange:function(file,filelist) {
+            this.upfilelist=filelist;
         },
         folderif:function(i,l) {
             return l[i].type=="folder"? true:false
         },
         picif:function(i,l) {
             return l[i].type=="folder"?false:true
+        },
+        primaryif:function() {
+            return this.pathlist.length==1 ? true : false
         }
     }
 })

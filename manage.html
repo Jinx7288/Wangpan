@@ -5,20 +5,21 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>管理界面</title>
         <link rel="stylesheet" href="styles/index.css">
+        <link rel="shortcut icon" href="favicon.ico">
         <link href="styles/style2.css" rel="stylesheet">
     </head>
     <body>
         <div id="app">
-            <el-dialog title="图片审核" :visible.sync="checkwindow">
+            <el-dialog title="图片审核" :visible.sync="checkwindow" width="70%">
                 <el-table :data="cacheList.slice(0+(pagenow-1)*10,10+(pagenow-1)*10)" style="width: 100%" highlight-current-row >
                     <el-table-column prop="type" label="文件类型"></el-table-column>
                     <el-table-column prop="name" label="文件名" width="180"></el-table-column>
                     <el-table-column prop="lasttime" label="修改时间" width="180"></el-table-column>
                     <el-table-column prop="size" label="大小"></el-table-column>
-                    <el-table-column label="操作">
+                    <el-table-column label="操作" >
                         <template slot-scope="scope">
-                            <el-button type="primary" plain size="mini" @click.native.prevent="pass(scope.$index,cacheList)">通过审核</el-button>
-                            <el-button type="danger" plain size="mini" @click.native.prevent="delete(scope.$index,cacheList)">和谐掉</el-button>
+                            <el-button type="primary" plain size="mini" @click.native="passsth(scope.$index,cacheList)">通过审核</el-button>
+                            <el-button type="danger" plain size="mini" @click.native="deletesth(scope.$index,cacheList)">和谐掉</el-button>
                         </template>
                     </el-table-column>
                     </el-table>
@@ -67,7 +68,7 @@
                         <el-table-column prop="lasttime" label="最后登录时间" width="180"></el-table-column>
                         <!-- <el-table-column prop="modifyTime" label="修改时间" width="180"></el-table-column> -->
                         <el-table-column prop="rate" label="网盘占用率"></el-table-column>
-                        <el-table-column prop="checknumber" label="需审核数"></el-table-column>
+                        <el-table-column prop="checknumber" label="待审核数"></el-table-column>
                         <el-table-column label="操作">
                             <template slot-scope="scope">
                                 <el-button type="primary" plain size="mini" @click.native.prevent="checkPic(scope.$index,userlist)">审核其图片</el-button>

@@ -6,6 +6,7 @@
         <title>我的文件</title>
         <link rel="stylesheet" href="styles/index.css">
         <link href="styles/style2.css" rel="stylesheet">
+        <link rel="shortcut icon" href="favicon.ico">
         <script src="scripts/mock.js"></script>
     </head>
     <body>
@@ -14,15 +15,11 @@
                 <el-dialog title="上传文件" :visible.sync="dialogVisble" width="30%">
                     <el-upload
                         drag
-                        :limit="1"
-                        accept="iamge/jpeg,image/png"
-                        auto-upload="false"
-                        :multiple="false"
-                        :http-request="uploadPost"
-                        with-credentials="true"
-                        :on-change="verify"
-                        :file-list="upfilelist"
-                        action="http://z3773e6368.qicp.vip/user/upload"
+                        accept="iamge/jpeg,image/png,image/jpg"
+                        :auto-upload="false"
+                        action=" "
+                        file-list="upfilelist"
+                        :on-change="handlechange"
                         >
                         <i class="el-icon-upload"></i>
                         <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
@@ -30,7 +27,7 @@
                     </el-upload>
                     <span slot="footer" class="dialog-footer">
                       <el-button @click="dialogVisble=false">取消</el-button>
-                      <el-button type="primary" @click.native.prevent="uploadPost">确定</el-button>
+                      <el-button type="primary" @click.native.prevent="uploadPoststh">确定</el-button>
                     </span>
                 </el-dialog>
                 <el-dialog title="创建文件夹(不关不是bug)" :visible.sync="cfVisble" width="30%">
@@ -75,7 +72,7 @@
                       <el-container>
                         <el-header>
                             <el-row>
-                                <el-button type="primary" icon="el-icon-back" plain @click="backtofolder">返回上级</el-button>
+                                <el-button type="primary" icon="el-icon-back" plain @click="backtofolder" disabled="primaryif">返回上级</el-button>
                                 <el-button type="primary" icon="el-icon-upload" @click="upload">上传文件</el-button>
                                 <el-button type="primary" plain icon="el-icon-folder" @click="createFolderToggle">新建文件夹</el-button>
                                 <el-button type="primary" plain icon="el-icon-download" @click="">多选下载，待定</el-button>
@@ -91,7 +88,11 @@
                                 </el-card>
                             </el-row>
                             <el-table :data="cacheList.slice(0+(pagenow-1)*10,10+(pagenow-1)*10)" style="width: 100%" highlight-current-row >
-                            <el-table-column prop="type" label="文件类型"></el-table-column>
+                            <el-table-column prop="type" label="文件类型">
+                                <template slot-scope="scope">
+                                    <i :class="[folderif(scope.$index,cacheList) ? 'el-icon-folder' : 'el-icon-picture-outline']"></i>
+                                </template>
+                            </el-table-column>
                             <el-table-column prop="name" label="文件名" width="180"></el-table-column>
                             <!-- <el-table-column prop="modifyTime" label="修改时间" width="180"></el-table-column> -->
                             <el-table-column prop="size" label="大小"></el-table-column>

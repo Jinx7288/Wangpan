@@ -72,17 +72,33 @@ let app=new Vue({
             getUser.onreadystatechange=function() {
                 if(getUser.readyState==4 && getUser.status==200) {
                     that.checkwindow=true;
-                    that.cacheList=JSON.parse(getUser.response);
+                    try{
+                        let list=JSON.parse(getUser.response);
+                        let arr=[];
+                        for (let index = 0; index < list.length; index++) {
+                            let element = list[index];
+                            let ele={
+                                name:element,
+                                lasttime:"2021-03-14-13-14",
+                                type:"picture",
+                                size:"0KB"
+                            }
+                            arr.push(ele);
+                        }
+                        that.cacheList=arr;
+                    } catch(e) {
+                        that.$message.error("未知错误！");
+                    }
                 }
             }
             getUser.send();
         },
-        delete:function(index,list) {
+        deletesth:function(index,list) {
             let item = list[index];
             let del=new XMLHttpRequest;
             del.withCredentials=true;
             let that=this;
-            del.open("get","http://z3773e6368.qicp.vip/admin/delete?picturename"+item.name);
+            del.open("get","http://z3773e6368.qicp.vip/admin/delete?picturename="+item.name);
             del.onreadystatechange=function () {
                 if(del.readyState==4 && del.status==200) {
                     if(del.response=="ok") {
@@ -90,21 +106,20 @@ let app=new Vue({
                             message:"删除成功！",
                             type:"success"
                         })
-                        list[index].remove();
+                        this.cacheList.slice(index,1);
                     } else {
                         that.$message.error(del.responseText);
                     }
-                } else {
-                    that.$message.error("未知错误！")
-                }
+                } 
             }
+            del.send();
         },
-        pass:function(index,list) {
+        passsth:function(index,list) {
             let item = list[index];
             let that=this;
             let pass=new XMLHttpRequest;
             pass.withCredentials=true;
-            pass.open("get","http://z3773e6368.qicp.vip/admin/update?picturename"+item.name);
+            pass.open("get","http://z3773e6368.qicp.vip/admin/update?picturename="+item.name);
             pass.onreadystatechange=function () {
                 if (pass.readyState==4 && pass.status==200) {
                     if (pass.response=="ok") {
@@ -112,14 +127,13 @@ let app=new Vue({
                             message:"已通过！",
                             type:"success"
                         })
-                        list[index].remove();
+                        this.cacheList.slice(index,1);
                     } else {
                         that.$message.error(pass.response);
                     }
-                } else {
-                    that.$message.error("未知错误！")
-                }
+                } 
             }
+        pass.send();
         }
     }
 })
