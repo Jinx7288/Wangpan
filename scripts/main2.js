@@ -282,11 +282,7 @@ let app=new Vue({
                             message:"上传成功！",
                             type:"success"
                         })
-                        that.cachelist.push({
-                          type:"photo",
-                          name: id,
-                          size:"0KB" 
-                        });
+                        that.piclist.push("id");
                     } else {
                         that.$message.error(uppost.response);
                     }
